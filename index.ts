@@ -1,6 +1,17 @@
 import http from "node:http";
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
 
+export enum HttpMethod {
+  GET = "GET",
+  POST = "POST",
+  PUT = "PUT",
+  DELETE = "DELETE",
+  CONNECT = "CONNECT",
+  OPTIONS = "OPTIONS",
+  TRACE = "TRACE",
+  PATCH = "PATCH",
+}
+
 class ExpressoApp {
   private server: Server;
 
