@@ -1,4 +1,4 @@
-# Eekpress
+# expresso
 
 Recreate a Node.js (actually Deno, but I'll use Deno's Node APIs) web framework, which implements:
 * HTTP server:
