@@ -5,7 +5,16 @@ class ExpressoApp {
   private server: Server;
 
   constructor () {
-    this.server = http.createServer();
+    this.server = http.createServer(
+      (req: IncomingMessage, res: ServerResponse) => {
+        const body = "hello world";
+        res.writeHead(200, {
+          "Content-Type": "text/plain",
+          "Content-Length": body.length,
+        });
+        res.end(body);
+      },
+    );
   }
 
   listen (port: number) {
