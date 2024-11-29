@@ -15,3 +15,6 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
 
 ## Progress log
 
+1. The `ExpressoApp` class is created to emulate the usual `app` in `express`, wrapping around `node:http`'s `Server`:
+   - Implement `ExpressoApp.listen(port)` method, which is a thin wrapper around `node:http`'s `Server.listen()`.
+   - Export a default function that returns an `ExpressoApp`.
