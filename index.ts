@@ -5,8 +5,8 @@ import qs from "https://deno.land/x/deno_qs/mod.ts";
 
 class Request {
   private req: IncomingMessage;
-  private app: ExpressoApp;
- 
+
+  readonly app: ExpressoApp;
   readonly body?: unknown; // filled outside of the contructor
   readonly cookies: Readonly<Record<string, string | undefined>>;
   readonly host: string;
