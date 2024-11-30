@@ -50,13 +50,22 @@ export enum HttpMethod {
   PATCH = "PATCH",
 }
 
+async function readRequestBody (req: IncomingMessage) {
+  return await new Promise((resolve) => {
+    let data = '';
+    req.on("data", chunk => data += chunk);
+    req.on("end", () => resolve(data));
+  });
+}
+
 class ExpressoApp {
   private server: Server;
 
   constructor () {
     this.server = http.createServer(
-      (_req: IncomingMessage, _res: ServerResponse) => {
+      async (_req: IncomingMessage, _res: ServerResponse) => {
         const req = new Request(this, _req);
+        (req.body as unknown) = await readRequestBody(_req);
         const body = "hello world";
         _res.writeHead(200, {
           "Content-Type": "text/plain",
