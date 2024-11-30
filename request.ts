@@ -5,13 +5,21 @@ import { HttpMethod } from "./types.ts";
 import { ExpressoApp } from "./app.ts";
 import { Response } from "./response.ts";
 
+async function readRequestBody (req: Readonly<IncomingMessage>): Promise<string> {
+  return await new Promise((resolve) => {
+    let data = '';
+    req.on("data", chunk => data += chunk);
+    req.on("end", () => resolve(data));
+  });
+}
+
 export class Request {
   private _req: IncomingMessage;
 
   readonly app: ExpressoApp;
-  readonly res?: Response; // filled outside of the constructor
+  readonly res!: Response; // filled inside init()
 
-  readonly body?: unknown; // filled outside of the constructor
+  readonly body!: unknown; // filled inside init()
   readonly cookies: Readonly<Record<string, string | undefined>>;
   readonly host: string;
   readonly hostname: string;
@@ -38,5 +46,11 @@ export class Request {
     this.query = qs.parse(url.search);
 
     this.ip = _req.socket.remoteAddress;
+  }
+
+  // Must call this before using an instance
+  async init ({ res }: { res: Response }) {
+    (this.res as Response) = res;
+    (this.body as string) = await readRequestBody(this._req);
   }
 }

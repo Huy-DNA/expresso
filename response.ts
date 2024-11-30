@@ -8,7 +8,7 @@ export class Response {
   private _res;
   private isEnded: boolean;
   
-  readonly req?: Request; // filled outside of the constructor
+  readonly req!: Request; // filled inside init()
   readonly app: ExpressoApp;
 
   private statusCode: number | undefined;  
@@ -22,6 +22,10 @@ export class Response {
     this.app = app;
     this._res = _res;
     this.isEnded = false;
+  }
+
+  async init ({ req }: { req: Request }) {
+    (this.req as Request) = req;
   }
 
   status (code: number): Response {
