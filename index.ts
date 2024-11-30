@@ -39,6 +39,19 @@ class Request {
 
 export { type Request };
 
+class Response {
+  private res;
+  
+  readonly app: ExpressoApp;
+
+  constructor (app: ExpressoApp, res: ServerResponse) {
+    this.app = app;
+    this.res = res;
+  }
+}
+
+export { type Response };
+
 export enum HttpMethod {
   GET = "GET",
   POST = "POST",
