@@ -27,7 +27,8 @@ export class Response {
 
   append (field: string, values: string | string[]): Response {
     const value = Array.isArray(values) ? values.join(',') : values;
-    this.headers[field] = value;
+    const header = this.headers[field];
+    this.headers[field] = header === undefined ? value : `${header},${value}`;
     return this;
   }
 
