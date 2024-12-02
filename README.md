@@ -30,4 +30,4 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
    ```
    Currently the behavior is as follows, based on what I observe about `express`:
    - If no route matches a request path, `404` is returned with message `Cannot match ${method} ${path}`.
-   - If a route matches a request path but does not call `send()` or whatsoever to populate its body, the request hangs.
+   - If a route matches a request path but does not explictly call `send()` or `end()`, the request hangs.

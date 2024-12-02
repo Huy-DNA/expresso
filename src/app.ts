@@ -54,7 +54,7 @@ export class ExpressoApp {
           res.status(404).send(`Cannot match ${req.method} ${req.path}`);
         }
         /* Implicitly end the response */
-        res.end();
+        res._implicit_end();
       },
     );
   }
