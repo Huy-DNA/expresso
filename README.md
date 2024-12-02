@@ -28,3 +28,6 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
     app.use('/', (req, res, next) => res.status(200).send('Hello world!').end());
     app.listen(8000);
    ```
+   Currently the behavior is as follows, based on what I observe about `express`:
+   - If no route matches a request path, `404` is returned with message `Cannot match ${method} ${path}`.
+   - If a route matches a request path but does not call `send()` or whatsoever to populate its body, the request hangs.
