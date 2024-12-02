@@ -53,7 +53,7 @@ export class Response {
   }
 
   end = once(() => {
-    this._res.writeHead(this.statusCode || 500, this.headers);
+    this._res.writeHead(this.statusCode || 200, this.headers);
     this._res.end(this.body || '');
   });
 }
