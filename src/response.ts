@@ -3,10 +3,10 @@ import { Buffer } from "node:buffer";
 import { ExpressoApp } from "./app.ts";
 import { Request } from "./request.ts";
 import { JsonConvertible } from "./types.ts";
+import { once } from "./utils.ts";
 
 export class Response {
   private _res;
-  private isEnded: boolean;
   
   readonly req!: Request; // filled inside init()
   readonly app: ExpressoApp;
@@ -14,14 +14,10 @@ export class Response {
   private statusCode: number | undefined;  
   private body: Buffer | string | undefined;
   private contentType: string | undefined;
-  private get contentLength (): number {
-    return this.body ? this.body.length : 0;
-  }
 
   constructor (app: ExpressoApp, _res: ServerResponse) {
     this.app = app;
     this._res = _res;
-    this.isEnded = false;
   }
 
   status (code: number): Response {
@@ -43,16 +39,8 @@ export class Response {
     return this;
   }
 
-  end () {
-    if (this.isEnded) return;
-    this.isEnded = true;
-    this._res.writeHead(this.statusCode || 200, { "content-length": this.contentLength, "content-type": this.contentType || 'text/html' });
+  end = once(() => {
+    this._res.writeHead(this.statusCode || 200, { "content-length": this.body?.length || 0, "content-type": this.contentType || 'text/html' });
     this._res.end(this.body || '');
-  }
-
-  _implicit_end () {
-    // express hangs when nothing is sent
-    if (this.body === undefined && this.status === undefined) return;
-    this.end();
-  }
+  });
 }

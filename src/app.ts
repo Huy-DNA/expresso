@@ -31,10 +31,8 @@ export class ExpressoApp {
         (req.body as string) = await readRequestBody(_req);
         (res.req as Request) = req;
         
-        let matchSpecificRouter = false;
         for (const router of this.routers) {
           if (router.route !== undefined && router.route !== req.path) continue;
-          if (router.route === req.path) matchSpecificRouter = true;
 
           let shouldContinue = false;
           // deno-lint-ignore no-inner-declarations
@@ -50,11 +48,12 @@ export class ExpressoApp {
           if (!shouldContinue) break;
         }
         
-        if (!matchSpecificRouter) {
+        if (this.routers.every(({ route }) => route !== undefined && route !== req.path)) {
           res.status(404).send(`Cannot match ${req.method} ${req.path}`);
         }
+
         /* Implicitly end the response */
-        res._implicit_end();
+        res.end();
       },
     );
   }
