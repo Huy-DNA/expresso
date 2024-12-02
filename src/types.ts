@@ -1,3 +1,6 @@
+import { Response } from "./index.ts";
+import { Request } from "./request.ts";
+
 export type JsonConvertible =
   | string
   | boolean
@@ -19,3 +22,7 @@ export enum HttpMethod {
   TRACE = "TRACE",
   PATCH = "PATCH",
 }
+
+export type NextHandler = () => void;
+
+export type Handler = (req: Request & Record<string, unknown>, res: Response, next: NextHandler) => void | Promise<void>;

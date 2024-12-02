@@ -33,7 +33,7 @@ export class Request {
 
     this.method = _req.method as HttpMethod;
 
-    const url = new URL(`http://expresso.com/${_req.url || ''}`);
+    const url = new URL(`http://expresso.com${_req.url || ''}`);
     this.path = url.pathname;
     this.query = qs.parse(url.search.slice(1));
 

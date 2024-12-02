@@ -44,9 +44,11 @@ export class Response {
   }
 
   end () {
+    // express hangs when nothing is sent
+    if (this.body === undefined) return;
     if (this.isEnded) return;
     this.isEnded = true;
-    this._res.writeHead(this.statusCode || 200, { "content-length": this.contentLength, "content-type": this.contentType || 'plain/text' });
+    this._res.writeHead(this.statusCode || 200, { "content-length": this.contentLength, "content-type": this.contentType || 'text/html' });
     this._res.end(this.body);
   }
 }

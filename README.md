@@ -11,7 +11,7 @@ Recreate a Node.js (actually Deno, but I'll use Deno's Node APIs) web framework,
     - Parse query string, request body (based on content-type), cookies, so that the users can easily extract these information.
     - Quickly build responses: send cookies, serve static files, render HTML.
 
-I tend to overdesign/over-engineer, so in this project, I'll try to write code right awayand only abstract when blocked.
+I tend to overdesign/over-engineer, so in this project, I'll try to write code right away and only abstract when blocked.
 
 ## Progress log
 
@@ -22,3 +22,9 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
 3. `Request` and `Response` classes for wrapping `node:http`'s respective `IncomingMessage` and `ServerResponse`.
    - `Request` can retrieve basic information about the `IncomingMessage`: `path`, `query`, `host`, `cookies`, `headers`, etc.
    - `Response` can be set content, status codes & sent.
+4. `ExpressoApp` allows for registering routes, plugins can now be defined in the form of functions (or closures).
+   ```js
+    const app = new ExpressoApp();
+    app.use('/', (req, res, next) => res.status(200).send('Hello world!').end());
+    app.listen(8000);
+   ```

@@ -9,5 +9,7 @@ export type { Response } from "./response.ts";
 export type { ExpressoApp } from "./app.ts";
 
 if (import.meta.main) {
-  (new ExpressoApp()).listen(8000);
+  const app = new ExpressoApp();
+  app.use('/home', (req, res, next) => res.status(200).send('Hello world!').end());
+  app.listen(8000);
 }
