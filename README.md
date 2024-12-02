@@ -19,3 +19,6 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
    - Implement `ExpressoApp.listen(port)` method, which is a thin wrapper around `node:http`'s `Server.listen()`.
    - Export a default function that returns an `ExpressoApp`.
 2. `HttpMethod` enum.
+3. `Request` and `Response` classes for wrapping `node:http`'s respective `IncomingMessage` and `ServerResponse`.
+   - `Request` can retrieve basic information about the `IncomingMessage`: `path`, `query`, `host`, `cookies`, `headers`, etc.
+   - `Response` can be set content, status codes & sent.
