@@ -9,9 +9,9 @@ export class Request {
   private _req: IncomingMessage;
 
   readonly app: ExpressoApp;
-  readonly res!: Response; // filled inside init()
+  readonly res?: Response;
 
-  readonly body!: unknown; // filled inside init()
+  readonly body?: unknown;
   readonly cookies: Readonly<Record<string, string | undefined>>;
   readonly host: string;
   readonly hostname: string;
