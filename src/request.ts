@@ -43,7 +43,7 @@ export class Request {
 
     const url = new URL(`http://expresso.com/${_req.url || ''}`);
     this.path = url.pathname;
-    this.query = qs.parse(url.search);
+    this.query = qs.parse(url.search.slice(1));
 
     this.ip = _req.socket.remoteAddress;
   }
