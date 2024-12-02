@@ -31,3 +31,4 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
    Currently the behavior is as follows, based on what I observe about `express`:
    - If no route matches a request path, `404` is returned with message `Cannot match ${method} ${path}`. This is implemented.
    - If a route matches a request path but the handler does not explictly call `send()` or `end()`, the request hangs (if this is the last matched route or `next` isn't called). This is not implemented as it seems trivial & make my implementation trickier.
+5. `Response` can be appended headers, multiple headers with same names are separated by `,`, according to the RFC.
