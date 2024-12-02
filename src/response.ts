@@ -24,10 +24,6 @@ export class Response {
     this.isEnded = false;
   }
 
-  async init ({ req }: { req: Request }) {
-    (this.req as Request) = req;
-  }
-
   status (code: number): Response {
     this.statusCode = code;
     return this;

@@ -5,14 +5,6 @@ import { HttpMethod } from "./types.ts";
 import { ExpressoApp } from "./app.ts";
 import { Response } from "./response.ts";
 
-async function readRequestBody (req: Readonly<IncomingMessage>): Promise<string> {
-  return await new Promise((resolve) => {
-    let data = '';
-    req.on("data", chunk => data += chunk);
-    req.on("end", () => resolve(data));
-  });
-}
-
 export class Request {
   private _req: IncomingMessage;
 
@@ -46,11 +38,5 @@ export class Request {
     this.query = qs.parse(url.search.slice(1));
 
     this.ip = _req.socket.remoteAddress;
-  }
-
-  // Must call this before using an instance
-  async init ({ res }: { res: Response }) {
-    (this.res as Response) = res;
-    (this.body as string) = await readRequestBody(this._req);
   }
 }

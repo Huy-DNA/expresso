@@ -3,6 +3,14 @@ import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { Request } from "./request.ts";
 import { Response } from "./response.ts";
 
+async function readRequestBody (req: Readonly<IncomingMessage>): Promise<string> {
+  return await new Promise((resolve) => {
+    let data = '';
+    req.on("data", chunk => data += chunk);
+    req.on("end", () => resolve(data));
+  });
+}
+
 export class ExpressoApp {
   private server: Server;
 
@@ -11,7 +19,9 @@ export class ExpressoApp {
       async (_req: IncomingMessage, _res: ServerResponse) => {
         const req = new Request(this, _req);
         const res = new Response(this, _res);
-        await Promise.all([req.init({ res }), res.init({ req })]);
+        (req.res as Response) = res;
+        (req.body as string) = await readRequestBody(_req);
+        (res.req as Request) = req;
         
         res.send(["Hello World", "This is from expresso"]).end();
 
