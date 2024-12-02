@@ -8,7 +8,7 @@ import { once } from "./utils.ts";
 export class Response {
   private _res;
   
-  readonly req!: Request; // filled inside init()
+  readonly req!: Request;
   readonly app: ExpressoApp;
 
   private statusCode: number | undefined;
