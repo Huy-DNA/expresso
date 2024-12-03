@@ -43,6 +43,6 @@ export class Request {
   }
 
   get (header: string): string | string[] | undefined {
-    return this.headers[header];
+    return this.headers[header.toLowerCase()];
   }
 }
