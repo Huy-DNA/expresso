@@ -11,14 +11,14 @@ export class Request {
   readonly app: ExpressoApp;
   readonly res?: Response;
 
-  readonly body?: unknown;
-  readonly cookies: Readonly<Record<string, string | undefined>>;
-  readonly host: string;
-  readonly hostname: string;
-  readonly ip?: string;
-  readonly method: HttpMethod;
-  readonly path: string;
-  readonly query: Readonly<Record<string, string>>;
+  body?: unknown;
+  cookies: Record<string, string | undefined>;
+  host: string;
+  hostname: string;
+  ip?: string;
+  method: HttpMethod;
+  path: string;
+  query: Record<string, string>;
 
   constructor (app: ExpressoApp, _req: IncomingMessage) {
     this.app = app;
