@@ -1,4 +1,4 @@
-import type { IncomingMessage } from "node:http";
+import type { IncomingHttpHeaders, IncomingMessage } from "node:http";
 import * as cookie from "npm:cookie@1.0.2";
 import qs from "https://deno.land/x/deno_qs/mod.ts";
 import { HttpMethod } from "./types.ts";
@@ -11,6 +11,7 @@ export class Request {
   readonly app: ExpressoApp;
   readonly res?: Response;
 
+  private headers: IncomingHttpHeaders;
   body?: unknown;
   cookies: Record<string, string | undefined>;
   host: string;
@@ -25,6 +26,7 @@ export class Request {
     this._req = _req;
 
     const { headers } = _req;
+    this.headers = headers;
 
     this.cookies = !headers.cookie ? {} : cookie.parse(headers.cookie);
 
@@ -38,5 +40,9 @@ export class Request {
     this.query = qs.parse(url.search.slice(1));
 
     this.ip = _req.socket.remoteAddress;
+  }
+
+  get (header: string): string | string[] | undefined {
+    return this.headers[header];
   }
 }
