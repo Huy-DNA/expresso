@@ -32,6 +32,38 @@ export class Response {
     return this;
   }
 
+  cookie (
+    name: string,
+    value: string,
+    {
+      domain,
+      encode = encodeURIComponent,
+      expires = 0,
+      httpOnly,
+      maxAge,
+      path = "/",
+      secure,
+      sameSite,
+    }:
+    {
+      domain?: string;
+      encode?: (_: string) => string;
+      expires?: Date | 0;
+      httpOnly?: boolean;
+      maxAge?: number;
+      path?: string;
+      secure?: boolean;
+      sameSite?: "None" | "Lax" | "Strict";
+    } = {},
+  ): Response {
+    let cookies = this._res.getHeader('Set-Cookie') || [];
+    if (!Array.isArray(cookies)) cookies = [cookies.toString()];
+    const newCookie = `${name}=${encode(value)}; Path=${path} ${domain ? `;Domain=${domain}` : ''} ${httpOnly ? ';HttpOnly' : ''} ${sameSite ? `;SameSite=${sameSite}` : ''} ${secure ? ';Secure' : ''} ${maxAge !== undefined ? `;Max-Age=${maxAge}` : ''} ${expires ? `;Expires=${expires.toUTCString()}` : ''}`;
+    cookies.push(newCookie);
+    this._res.setHeader('Set-Cookie', cookies);
+    return this;
+  }
+
   status (code: number): Response {
     this.statusCode = code;
     return this;
