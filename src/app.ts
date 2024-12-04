@@ -1,17 +1,8 @@
 import http from "node:http";
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
-import { Buffer } from "node:buffer";
 import { Request } from "./request.ts";
 import { Response } from "./response.ts";
 import { Handler } from "./types.ts";
-
-async function readRequestBody (req: Readonly<IncomingMessage>): Promise<Buffer> {
-  return await new Promise((resolve) => {
-    let data = Buffer.from('');
-    req.on("data", chunk => data = Buffer.concat([data, chunk]));
-    req.on("end", () => resolve(data));
-  });
-}
 
 function normalizeRoute (route: string): string {
   if (route.slice(-1) === '/') return route.slice(0, -1);
@@ -29,7 +20,6 @@ export class ExpressoApp {
         const req = new Request(this, _req);
         const res = new Response(this, _res);
         (req.res as Response) = res;
-        (req.body as Buffer) = await readRequestBody(_req);
         (res.req as Request) = req;
         
         for (const router of this.routers) {

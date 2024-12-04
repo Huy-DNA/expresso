@@ -6,7 +6,7 @@ import { ExpressoApp } from "./app.ts";
 import { Response } from "./response.ts";
 
 export class Request {
-  private _req: IncomingMessage;
+  _req: IncomingMessage;
 
   readonly app: ExpressoApp;
   readonly res?: Response;

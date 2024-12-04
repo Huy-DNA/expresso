@@ -1,5 +1,5 @@
-import { Response } from "./index.ts";
 import { Request } from "./request.ts";
+import { Response } from "./response.ts";
 
 export type JsonConvertible =
   | string

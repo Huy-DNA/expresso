@@ -6,7 +6,7 @@ import { JsonConvertible } from "./types.ts";
 import { once } from "./utils.ts";
 
 export class Response {
-  private _res;
+  _res: ServerResponse;
   
   readonly req!: Request;
   readonly app: ExpressoApp;
