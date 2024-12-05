@@ -88,4 +88,8 @@ export class Response {
     this._res.writeHead(this.statusCode || 200, this.headers);
     this._res.end(this.body || '');
   });
+
+  get headersSent (): boolean {
+    return this._res.headersSent;
+  }
 }
