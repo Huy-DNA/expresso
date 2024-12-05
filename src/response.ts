@@ -133,4 +133,8 @@ export class Response {
   get headersSent (): boolean {
     return this._res.headersSent;
   }
+
+  vary (value: string): Response {
+    return this.append('vary', value);
+  }
 }
