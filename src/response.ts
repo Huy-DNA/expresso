@@ -36,6 +36,11 @@ export class Response {
     return this.headers[field];
   }
 
+  set (field: string, value: string): Response {
+    this.headers[field] = value;
+    return this;
+  }
+
   cookie (
     name: string,
     value: string,
