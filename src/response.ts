@@ -84,6 +84,12 @@ export class Response {
     return this;
   }
 
+  json (data: JsonConvertible): Response {
+    this.body = data;
+    this.headers["content-type"] = "application/json";
+    return this;
+  }
+
   end = once(() => {
     this._res.writeHead(this.statusCode || 200, this.headers);
     this._res.end(this.body || '');
