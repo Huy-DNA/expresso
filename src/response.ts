@@ -32,6 +32,10 @@ export class Response {
     return this;
   }
 
+  get (field: string): string | string[] | undefined {
+    return this.headers[field];
+  }
+
   cookie (
     name: string,
     value: string,
