@@ -78,6 +78,12 @@ export class Response {
     return this;
   }
 
+  sendStatus (code: number): Response {
+    this.statusCode = code;
+    this.body = code.toString();
+    return this;
+  }
+
   send (data: Buffer | string | JsonConvertible): Response {
     if (data instanceof Buffer) {
       this.body = data;
