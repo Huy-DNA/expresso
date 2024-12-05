@@ -27,17 +27,17 @@ export class Response {
 
   append (field: string, values: string | string[]): Response {
     const value = Array.isArray(values) ? values.join(',') : values;
-    const header = this.headers[field];
+    const header = this.headers[field.toLowerCase()];
     this.headers[field] = header === undefined ? value : `${header},${value}`;
     return this;
   }
 
   get (field: string): string | string[] | undefined {
-    return this.headers[field];
+    return this.headers[field.toLowerCase()];
   }
 
   set (field: string, value: string): Response {
-    this.headers[field] = value;
+    this.headers[field.toLowerCase()] = value;
     return this;
   }
 
