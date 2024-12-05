@@ -90,6 +90,15 @@ export class Response {
     return this;
   }
 
+  location (path: string): Response {
+    if (path === "back") {
+      this.headers["location"] = this.req.get("referer")?.at(0) || "/";
+    } else {
+      this.headers["location"] = path; 
+    }
+    return this;
+  }
+
   end = once(() => {
     this._res.writeHead(this.statusCode || 200, this.headers);
     this._res.end(this.body || '');
