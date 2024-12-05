@@ -99,6 +99,17 @@ export class Response {
     return this;
   }
 
+  redirect (status: number, path: string): Response;
+  redirect (path: string): Response;
+  redirect (status: number | string, path?: string): Response {
+    if (path !== undefined) {
+      this.statusCode = status as number;
+      return this.location(path);
+    }
+    this.statusCode = 302;
+    return this.location(status as string);
+  }
+
   end = once(() => {
     this._res.writeHead(this.statusCode || 200, this.headers);
     this._res.end(this.body || '');
