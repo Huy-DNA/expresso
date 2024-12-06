@@ -87,6 +87,56 @@ export class ExpressoApp {
     return this;
   }
 
+  get (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.GET, handler: callback });
+    return this;
+  }
+
+  post (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.POST, handler: callback });
+    return this;
+  }
+
+  head (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.HEAD, handler: callback });
+    return this;
+  }
+
+  patch (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.PATCH, handler: callback });
+    return this;
+  }
+
+  put (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.PUT, handler: callback });
+    return this;
+  }
+
+  options (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.OPTIONS, handler: callback });
+    return this;
+  }
+
+  delete (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.DELETE, handler: callback });
+    return this;
+  }
+
+  trace (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.TRACE, handler: callback });
+    return this;
+  }
+
+  connect (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: HttpMethod.CONNECT, handler: callback });
+    return this;
+  }
+
+  all (route: string, callback: Handler): this {
+    this.routers.push({ route: new Route(route, { asPrefix: false }), method: '*', handler: callback });
+    return this;
+  }
+
   listen (port: number) {
     console.log(`Expresso server is running on ${port}`);
     this.server.listen(port);
