@@ -2,16 +2,38 @@ import http from "node:http";
 import type { IncomingMessage, Server, ServerResponse } from "node:http";
 import { Request } from "./request.ts";
 import { Response } from "./response.ts";
-import { Handler } from "./types.ts";
+import { Handler, HttpMethod } from "./types.ts";
 
-function normalizeRoute (route: string): string {
-  if (route.slice(-1) === '/') return route.slice(0, -1);
-  return route;
+class Route {
+  private patterns: RegExp[];
+
+  constructor (route: string | string[], options: { asPrefix: boolean; }) { 
+    if (typeof route === "string") {
+      this.patterns = [pathToRegex(normalizePath(route))];
+    } else {
+      this.patterns = route.map(normalizePath).map(pathToRegex);
+    }
+    
+    function normalizePath (path: string): string {
+      if (path.slice(-1) !== '/') path += '/';
+      path = path.replaceAll('*', '.*');
+      return path;
+    }
+
+    function pathToRegex (path: string): RegExp {
+      return new RegExp(`^${path}${options.asPrefix ? '' : '$'}`);
+    }
+  }
+
+  match (route: string): boolean {
+    if (route.slice(-1) !== '/') route += '/';
+    return this.patterns.some((pattern) => !!route.match(pattern));
+  }
 }
 
 export class ExpressoApp {
   private server: Server;
-  private routers: { route?: string; handler: Handler }[];
+  private routers: { route: Route; method: HttpMethod | '*'; handler: Handler }[];
 
   constructor () {
     this.routers = [];
@@ -22,8 +44,10 @@ export class ExpressoApp {
         (req.res as Response) = res;
         (res.req as Request) = req;
         
+        let matchedOnce = false;
         for (const router of this.routers) {
-          if (router.route !== undefined && router.route !== req.path) continue;
+          if (!router.route.match(req.path) || ![req.method, '*'].includes(router.method)) continue;
+          matchedOnce = true;
 
           let shouldContinue = false;
           // deno-lint-ignore no-inner-declarations
@@ -39,8 +63,8 @@ export class ExpressoApp {
           if (!shouldContinue) break;
         }
         
-        if (this.routers.every(({ route }) => route !== undefined && route !== req.path)) {
-          res.status(404).send(`Cannot match ${req.method} ${req.path}`);
+        if (!matchedOnce) {
+          res.status(404).send(`Cannot ${req.method} ${req.path}`);
         }
 
         /* Implicitly end the response */
@@ -54,11 +78,11 @@ export class ExpressoApp {
   use (handler: Handler): this;
   use (routeOrHandler: string | string[] | Handler, handler?: Handler): this {
     if (typeof routeOrHandler === 'string') {
-      this.routers.push({ route: normalizeRoute(routeOrHandler), handler: handler! });
+      this.routers.push({ route: new Route(routeOrHandler, { asPrefix: true }), method: '*', handler: handler! });
     } else if (Array.isArray(routeOrHandler)) {
-      this.routers.push(...routeOrHandler.map((r) => ({ route: normalizeRoute(r), handler: handler! })));
+      this.routers.push(...routeOrHandler.map((r) => ({ route: new Route(r, { asPrefix: true }), method: '*' as const, handler: handler! })));
     } else {
-      this.routers.push({ handler: routeOrHandler });
+      this.routers.push({ handler: routeOrHandler, route: new Route('*', { asPrefix: true }), method: '*' });
     }
     return this;
   }
