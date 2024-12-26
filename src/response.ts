@@ -100,7 +100,7 @@ export class Response {
   }
 
   json (data: JsonConvertible): Response {
-    this.body = data;
+    this.body = JSON.stringify(data);
     this.headers["content-type"] = "application/json";
     return this;
   }
