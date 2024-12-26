@@ -9,6 +9,7 @@ export default function () {
 export type { Request } from "./request.ts";
 export type { Response } from "./response.ts";
 export type { ExpressoApp } from "./app.ts";
+export * from "./plugins/index.ts";
 
 if (import.meta.main) {
   const app = new ExpressoApp();
