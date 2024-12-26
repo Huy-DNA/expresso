@@ -26,4 +26,4 @@ export enum HttpMethod {
 
 export type NextHandler = () => void;
 
-export type Handler = (req: Request & Record<string, unknown>, res: Response, next: NextHandler) => void | Promise<void>;
+export type Handler = (req: Request & Record<string, unknown>, res: Response, next: NextHandler) => unknown | Promise<unknown>;

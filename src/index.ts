@@ -15,6 +15,7 @@ if (import.meta.main) {
   app.use(cors());
   app.use(bodyParser.json());
   app.use('/home', (req, res, next) => res.status(200).cookie('id1', '1234', {}).cookie('id2', '1234', {}).send('Hello world!').append('header', ['1', '2']).append('header', ['3', '4']).end());
+  app.use('/back', (req, res) => req.query.confirm ? res.redirect('/home') : res.redirect('back'));
   app.use('/contact', () => {});
   app.listen(8000);
 }
