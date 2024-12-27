@@ -52,9 +52,7 @@ export function serveStatic(
     const filepath = normalizePath(req.path);
     if (filepath !== normalizedRoot && !filepath.startsWith(normalizedRoot + "/")) return next();
 
-    if (![HttpMethod.GET, HttpMethod.HEAD].includes(req.method)) {
-      return res.status(404).end();
-    }
+    if (![HttpMethod.GET, HttpMethod.HEAD].includes(req.method)) return res.status(404).end();
     
     let fileStat: Stats;
     try {
@@ -68,22 +66,16 @@ export function serveStatic(
       return res.status(404).send(`File ${filepath} not found`).end();
     }
 
-    const mimeType = mime.getType(filepath) || "plain/text";
-    res.type(mimeType);
+    res.type(mime.getType(filepath) || "plain/text");
 
     if (lastModified) res.set("Last-Modified", formatToGMT(fileStat.mtime));
 
     const mAge = typeof maxAge === "number" ? maxAge : ms(maxAge);
-    const cacheControlHeader = !cacheControl
-      ? undefined
-      : !mAge
-      ? undefined
-      : immutable
-      ? `max-age=${mAge}, immutable`
-      : `max-age=${mAge}`;
-    if (cacheControlHeader) res.set("Cache-Control", cacheControlHeader);
+    if (cacheControl && mAge) res.append("Cache-Control", mAge); 
+    if (cacheControl && mAge && immutable) res.append("Cache-Control", "immutable");
 
     if (acceptRanges) res.set("Accept-Ranges", "bytes");
+
     const rangeHeader = acceptRanges ? req.get("Range") : undefined;
     if (!rangeHeader) {
       if (req.method === HttpMethod.HEAD) {
