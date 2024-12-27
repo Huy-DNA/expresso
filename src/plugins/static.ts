@@ -35,13 +35,18 @@ export function serveStatic(
   function normalizePath (path: string): string {
     // turn absolute path into relative path as we're calling `fs` for reading file-system files
     const relativePath = path.startsWith("/") ? path.slice(1) : path;
-    // disallow referencing parent folders
-    const removedParentDotsPath = relativePath.replaceAll('/../', '/');
-    const nonTrailingSlashPath = removedParentDotsPath.endsWith("/") ? removedParentDotsPath.slice(0, -1) : removedParentDotsPath;
+    const nonTrailingSlashPath = relativePath.endsWith("/") ? relativePath.slice(0, -1) : relativePath;
     return nonTrailingSlashPath;
+  }
+  
+  function doesReferenceParent (path: string): boolean {
+    return path.startsWith("../") || path === ".." || path.includes("/../");
   }
 
   const normalizedRoot = normalizePath(root);
+  if (doesReferenceParent(normalizedRoot)) {
+    throw new Error("Static root dir cannot reference parent dir");
+  }
 
   return async (req, res, next) => {
     const filepath = normalizePath(req.path);
