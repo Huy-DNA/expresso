@@ -87,13 +87,13 @@ export class Response {
   send (data: Buffer | string | JsonConvertible): Response {
     if (data instanceof Buffer) {
       this.body = data;
-      this.headers["content-type"] = "application/octet-stream";
+      this.headers["content-type"] ||= "application/octet-stream";
     } else if (typeof data === "string") {
       this.body = data;
-      this.headers["content-type"] = "text/html";
+      this.headers["content-type"] ||= "text/html";
     } else {
       this.body = JSON.stringify(data);
-      this.headers["content-type"] = "application/json";
+      this.headers["content-type"] ||= "application/json";
     }
     this.headers["content-length"] = this.body.length.toString();
     return this;
@@ -136,5 +136,9 @@ export class Response {
 
   vary (value: string): Response {
     return this.append('vary', value);
+  }
+
+  type (value: string): Response {
+    return this.set('content-type', value);
   }
 }
