@@ -53,7 +53,7 @@ export function serveStatic(
     if (filepath !== normalizedRoot && !filepath.startsWith(normalizedRoot + "/")) return next();
 
     if (![HttpMethod.GET, HttpMethod.HEAD].includes(req.method)) {
-      return res.status(403).send(`Forbidden`).end();
+      return res.status(404).end();
     }
     
     let fileStat: Stats;
