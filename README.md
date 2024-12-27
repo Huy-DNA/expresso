@@ -12,3 +12,19 @@ Recreate a Node.js (actually Deno, but I'll use Deno's Node APIs) web framework,
     - Quickly build responses: send cookies, serve static files, render HTML.
 
 I tend to overdesign/over-engineer, so in this project, I'll try to write code right away and only abstract when blocked.
+
+## Lessons
+
+- Path manipulation is a little tricky.
+
+- Serving static files is kinda hard to do correctly:
+  - Security issues: Scope access to the static folders only.
+  - Range requests: Serving multiple ranges, parse the `Range` header.
+
+- Always read raw data into `Buffer` instead of `string`.
+
+- `Content-Type` is very important in how the browser decides to do with a file it receives.
+
+## To do
+
+- Write comprehensive tests.
