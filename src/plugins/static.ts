@@ -35,7 +35,7 @@ export function serveStatic(
   if (doesPathReferenceParent(root)) {
     throw new Error("Static root dir cannot reference parent dir");
   }
-  const normalizedRoot = root.replace(/^\//, '').replace(/\/$/, ''); 
+  const normalizedRoot = root.replace(/^(\.)?\//, '').replace(/\/$/, ''); 
 
   return async (req, res, next) => {
     const filepath = req.path.replace(/^\//, '').replace(/\/$/, '');
