@@ -151,6 +151,7 @@ function readStream (stream: ReadStream): Promise<Buffer> {
   });
 }
 
+// Parse HTTP Range Request header: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Range
 function parseRangeHeader(
   range: string,
 ): { start: number | undefined; end: number | undefined }[] {
@@ -169,6 +170,7 @@ function parseRangeHeader(
     });
 }
 
+// Format Date to HTTP Last-Modified Response header format: https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/Last-Modified
 function formatToGMT(date: Date): string {
   const dayNames = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
   const monthNames = [
