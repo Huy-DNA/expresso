@@ -32,25 +32,16 @@ export function serveStatic(
     maxAge = 0,
   }: StaticServeOptions = {},
 ): Handler {
-  function normalizePath (path: string): string {
-    // turn absolute path into relative path as we're calling `fs` for reading file-system files
-    const relativePath = path.startsWith("/") ? path.slice(1) : path;
-    const nonTrailingSlashPath = relativePath.endsWith("/") ? relativePath.slice(0, -1) : relativePath;
-    return nonTrailingSlashPath;
-  }
-  
-  function doesReferenceParent (path: string): boolean {
-    return path.startsWith("../") || path === ".." || path.includes("/../");
-  }
-
-  const normalizedRoot = normalizePath(root);
-  if (doesReferenceParent(normalizedRoot)) {
+  if (doesPathReferenceParent(root)) {
     throw new Error("Static root dir cannot reference parent dir");
   }
+  const normalizedRoot = root.replace(/^\//, '').replace(/\/$/, ''); 
 
   return async (req, res, next) => {
-    const filepath = normalizePath(req.path);
+    const filepath = req.path.replace(/^\//, '').replace(/\/$/, '');
     if (filepath !== normalizedRoot && !filepath.startsWith(normalizedRoot + "/")) return next();
+
+    if (doesPathReferenceParent(filepath)) return res.status(400).send("Cannot access parent dir").end();
 
     if (![HttpMethod.GET, HttpMethod.HEAD].includes(req.method)) return res.status(404).end();
     
@@ -188,4 +179,8 @@ function formatToGMT(date: Date): string {
   const second = date.getUTCSeconds().toString().padStart(2, "0");
 
   return `${dayName}, ${day} ${month} ${year} ${hour}:${minute}:${second} GMT`;
+}
+
+function doesPathReferenceParent (path: string): boolean {
+  return path.startsWith("../") || path === ".." || path.includes("/../") || path.includes("/..");
 }
