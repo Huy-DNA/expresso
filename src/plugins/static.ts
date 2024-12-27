@@ -109,7 +109,6 @@ export function serveStatic(
       if (start < 0 || end >= fileStat.size) {
         return res.status(416).send("Range out-of-bound").end();
       }
-      console.log(start, end, fileStat.size);
 
       res.status(206)
          .set(
