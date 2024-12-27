@@ -1,6 +1,7 @@
 import { ExpressoApp } from "./app.ts";
 import { bodyParser } from "./plugins/body-parser.ts";
 import { cors } from "./plugins/cors.ts";
+import { serveStatic } from "./plugins/static.ts";
 
 export default function () {
   return new ExpressoApp();
@@ -14,6 +15,7 @@ export * from "./plugins/index.ts";
 if (import.meta.main) {
   const app = new ExpressoApp();
   app.use(cors());
+  app.use(serveStatic("/public", { fallthrough: false }));
   app.use(bodyParser.json());
   app.use('/home', (req, res, next) => res.status(200).cookie('id1', '1234', {}).cookie('id2', '1234', {}).send('Hello world!').append('header', ['1', '2']).append('header', ['3', '4']).end());
   app.use('/back', (req, res) => req.query.confirm ? res.redirect('/home') : res.redirect('back'));
