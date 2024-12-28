@@ -21,6 +21,7 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
     - Handle `..` and `.`
   - Ancestor/Descendant directory check:
     - Either the ancestor/descendant path can come in with or without `/`.
+
   -> May worth creating a `Path` abstraction to:
     - Normalize paths: Remove `..`, `.` and standardize whether to include trailing `/`.
     - Perform equality check.
