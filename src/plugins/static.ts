@@ -47,13 +47,13 @@ export function serveStatic(
     
     let fileStat: Stats;
     try {
-      fileStat = await fs.lstat(filepath); // Don't follow symlink
+      fileStat = await fs.lstat(filepath);
     } catch {
       if (fallthrough) return next();
       return res.status(404).send(`File ${filepath} not found`).end();
     }
 
-    if (fileStat.isDirectory()) {
+    if (!fileStat.isFile()) {
       return res.status(404).send(`File ${filepath} not found`).end();
     }
 
