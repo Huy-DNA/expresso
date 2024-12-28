@@ -30,7 +30,7 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
   - Security issues:
     - Scope serving requests to some folder only: Be careful of relative paths, etc. This can lead to arbitrary files in the filesystem being sent.
     - Consider dotfiles - `static-serve` ignores these by default.
-    - Avoid following symlinks.
+    - Avoid following symlinks (or just following but avoid allowing users to upload symlink). I just follow symlinks in this project.
   - Range requests.
 
 - Always read raw data into `Buffer` instead of `string`.
