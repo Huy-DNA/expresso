@@ -13,17 +13,26 @@ Recreate a Node.js (actually Deno, but I'll use Deno's Node APIs) web framework,
 
 I tend to overdesign/over-engineer, so in this project, I'll try to write code right away and only abstract when blocked.
 
-## Lessons
+## Experience
 
-- Path manipulation is a little tricky.
-
-- Serving static files is kinda hard to do correctly:
-  - Security issues: Scope access to the static folders only.
-  - Range requests: Serving multiple ranges, parse the `Range` header.
+- Path manipulation is tricky. Common operations I perform on a path:
+  - Equality check:
+    - Handle paths that can come in with or without the `/`.
+    - Handle `..` and `.`
+  - Ancestor/Descendant directory check:
+    - Either the ancestor/descendant path can come in with or without `/`.
+  -> May worth creating a `Path` abstraction to:
+    - Normalize paths: Remove `..`, `.` and standardize whether to include trailing `/`.
+    - Perform equality check.
+    - Perform ancestor/descendant check.
+- Serving static files takes some considerations and I may miss something:
+  - Security issues:
+    - Scope serving requests to some folder only: Be careful of relative paths, etc. This can lead to arbitrary files in the filesystem being sent.
+    - Consider dotfiles - `static-serve` ignores these by default.
+    - Avoid symlinks.
+  - Range requests.
 
 - Always read raw data into `Buffer` instead of `string`.
-
-- `Content-Type` is very important in how the browser decides to do with a file it receives.
 
 ## To do
 
