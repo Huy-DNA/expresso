@@ -47,7 +47,7 @@ export function serveStatic(
     
     let fileStat: Stats;
     try {
-      fileStat = await fs.lstat(filepath);
+      fileStat = await fs.stat(filepath);
     } catch {
       if (fallthrough) return next();
       return res.status(404).send(`File ${filepath} not found`).end();
