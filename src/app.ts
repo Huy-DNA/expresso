@@ -9,26 +9,25 @@ class Route {
 
   constructor (route: string | string[], options: { asPrefix: boolean; }) { 
     if (typeof route === "string") {
-      this.patterns = [pathToRegex(normalizePath(route))];
+      this.patterns = [pathToRegex(Route.normalizePath(route))];
     } else {
-      this.patterns = route.map(normalizePath).map(pathToRegex);
-    }
+      this.patterns = route.map(Route.normalizePath).map(pathToRegex);
+    } 
     
-    function normalizePath (path: string): string {
-      if (path.slice(-1) !== '/') path += '/';
-      path = path.replaceAll('*', '.*');
-      return path;
-    }
-
     function pathToRegex (path: string): RegExp {
       return new RegExp(`^${path}${options.asPrefix ? '' : '$'}`);
     }
   }
 
   match (route: string): boolean {
-    if (route.slice(-1) !== '/') route += '/';
-    return this.patterns.some((pattern) => !!route.match(pattern));
+    return this.patterns.some((pattern) => !!Route.normalizePath(route).match(pattern));
   }
+
+  private static normalizePath (path: string): string {
+    if (!path.endsWith('/')) path += '/';
+    if (!path.startsWith('/')) path = '/' + path;
+    return path;
+  } 
 }
 
 export class ExpressoApp {
@@ -82,7 +81,7 @@ export class ExpressoApp {
     } else if (Array.isArray(routeOrHandler)) {
       this.routers.push(...routeOrHandler.map((r) => ({ route: new Route(r, { asPrefix: true }), method: '*' as const, handler: handler! })));
     } else {
-      this.routers.push({ handler: routeOrHandler, route: new Route('*', { asPrefix: true }), method: '*' });
+      this.routers.push({ handler: routeOrHandler, route: new Route('.*', { asPrefix: true }), method: '*' });
     }
     return this;
   }
