@@ -77,7 +77,7 @@ export function serveStatic(
       }
       try {
         const fileContent = await fs.readFile(filepath);
-        return res.status(200).send(fileContent).end();
+        return res.status(200).raw(fileContent).end();
       } catch {
         return res.status(500).send(`Internal server error`).end();
       }
@@ -110,7 +110,8 @@ export function serveStatic(
       const stream = createReadStream(filepath, { start, end });
       try {
         const data = await readStream(stream);
-        return res.send(data);
+        // already set content-type so use `raw`
+        return res.raw(data);
       } catch {
         return res.status(500).send("Internal server error").end();
       }

@@ -224,12 +224,19 @@ Set the response's status code and the body also to `code`.
 - If `data` is a `Buffer`:
   - Set the response's body to `data`.
   - Set the `Content-Type` header to `application/octet-stream`.
+  - Set the `Content-Length` header to `data`'s length.
 - If `data` is a `String`:
   - Set the response's body to `data`.
   - Set the `Content-Type` header to `text/html`.
+  - Set the `Content-Length` header to `data`'s length.
 - If `data` is a `JsonConvertible` value:
   - Set the response's body to `data`.
   - Set the `Content-Type` header to `application/json`.
+  - Set the `Content-Length` header to `data`'s length.
+
+#### `Response.raw(data: Buffer | string): Response`
+
+Like `Response.send` but do not set `Content-Type`.
 
 #### `Response.json(data: JsonConvertible): Response`
 
