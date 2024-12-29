@@ -111,7 +111,7 @@ import expresso from 'expresso';
 const app = expresso();
 ```
 
-#### `App.use([path], callback)`
+#### `App.use([path]: string | string[], callback: Handler): App`
 
 Like `expressjs`'s `app.use`.
 
@@ -123,7 +123,7 @@ Like `expressjs`'s `app.use`.
 
 With `path` omitted, `'.*'` is assumed and `callback` is invoked for all `path`.
 
-#### `App.METHOD([path], callback)`
+#### `App.METHOD([path]: string | string[], callback: Handler): App`
 
 Like `expressjs`'s `app.METHOD`.
 
@@ -132,3 +132,127 @@ Like `expressjs`'s `app.METHOD`.
 #### `App.listen(port)`
 
 Start the HTTP and listening on port `port`.
+
+### Request
+
+#### `Request.body`
+
+The request's body. By default, this is `undefined` - you need to use the `body-parser` plugin.
+
+```ts
+import { bodyParser } from 'expresso'
+app.use([path], bodyParser.raw);  // `req.body` will return the raw content of the request's body.
+app.use([path], bodyParser.json);  // `req.body` will return the content as json of the request's body.
+app.use([path], bodyParser.urlencoded); // `req.body` will return the content of the request's body as urlencoded string.
+```
+
+#### `Request.cookies`
+
+The request's cookies, which is an key-value object mapping cookie's name to the cookie's value.
+
+#### `Request.host`
+
+The value of the request's `Host` header. If the `Host` header is missing, this field is set to `""`.
+
+#### `Request.method`
+
+The method of the request.
+
+#### `Request.originalUrl`
+
+The full URL of the request.
+
+#### `Request.path`
+
+The requested path of the request, omitting the query string.
+
+```ts
+"/path?qs=q" // -> "/path"
+"/path" // -> "/path"
+```
+
+#### `Request.query`
+
+The query string of the request, parsed using the `qs` package.
+
+```ts
+"/path?qs=q" // { qs: "q" }
+"/path?qs[0]=q1&qs[1]=q2" // { qs: [ "q1", "q2" ] }
+```
+
+#### `Request.ip`
+
+The IP address of the client.
+
+### `Response`
+
+#### `Response.append(field: string, values: string | string[]): Response`
+
+Set the header `field` to a header value or an array of header values. If the header already exists, the header value is appended instead of being overridden.
+
+#### `Response.get(field: string): string | string[] | undefined`
+
+Get the value of the header `field`.
+
+#### `Response.set(field, value: string): Response`
+
+Set the header `field` to `value`.
+
+#### `Response.cookie(name: string, value: string, options: object): Response`
+
+Set a cookie `name` to `value` along with some options. The `options` object has the following optional fields:
+
+- `domain?: string`: The `Domain` property of the cookie.
+- `encode?: (_: string) => string`: Encode the cookie's value.
+- `expires?: Date | 0`: The `Expires` property of the cookie.
+- `httpOnly?: boolean`: The `HttpOnly` property of the cookie.
+- `maxAge?: number`: The `Max-Age` property of the cookie.
+- `path?: string`: The `Path` property of the cookie.
+- `secure?: boolean`: The `Secure` property of the cookie.
+- `sameSite?: "None" | "Lax" | "Strict"`: The `Same-Site` property of the cookie.
+
+#### `Response.status(code: number): Response`
+
+Set the response's status code.
+
+#### `Response.sendStatus(code: number): Response`
+
+Set the response's status code and the body also to `code`.
+
+#### `Response.send(data: Buffer | string | JsonConvertible): Response`
+
+- If `data` is a `Buffer`:
+  - Set the response's body to `data`.
+  - Set the `Content-Type` header to `application/octet-stream`.
+- If `data` is a `String`:
+  - Set the response's body to `data`.
+  - Set the `Content-Type` header to `text/html`.
+- If `data` is a `JsonConvertible` value:
+  - Set the response's body to `data`.
+  - Set the `Content-Type` header to `application/json`.
+
+#### `Response.json(data: JsonConvertible): Response`
+
+Set the response's body to `data` and set the `Content-Type` header to `application/json`.
+
+#### `Response.location(path: string): Response`
+
+Set the `Location` header to `path`.
+
+If `path` is `"back"`, set `Location` to the corresponding `Request`'s `Referer` header.
+
+#### `Response.redirect([status]: number, path: string): Response`
+
+Set the status code to `status` (by default 302) and set the `Location` header to `path`.
+
+#### `Response.headersSent(): object`
+
+Return the headers sent on this response.
+
+#### `Response.vary(value: string): Response`
+
+Append `value` to the `Vary` header.
+
+#### `Reponse.type(value: string): Response`
+
+Set the `Content-Type` header to `value`.
