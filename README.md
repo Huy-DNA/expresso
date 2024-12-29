@@ -1,17 +1,77 @@
 # expresso
 
-Recreate a Node.js (actually Deno, but I'll use Deno's Node APIs) web framework, which implements:
-* HTTP server:
-    - The HTTP API in Node has handled concurrent connections well. The HTTP API also provides us a low-level mechanism to extract request headers, cookies and body. This is incovenient sometimes, for example, an HTTP request body is streamed incrementally and we need to put together the chunks to get the full body. -> We'll provide a higher-level way to extract a full request and access its fields.
-    - The HTTP API in Node only handles HTTP at the connection level. The semantics and interpretation of HTTP requests are still not defined, for example, content negotiation, file uploads, request header interpretation, conditional-GET handling. The HTTP server, to be compliant with the HTTP RFC 9110 & RFC 9112, needs to provide some sensible defaults.
-    - We also need to handle large file downloads by breaking it into multiple HTTP responses.
-* Web framework - After we have an HTTP server with sensible defaults, the web framework should allow users to:
-    - Specify routes & handlers.
-    - Specify middleware.
-    - Parse query string, request body (based on content-type), cookies, so that the users can easily extract these information.
-    - Quickly build responses: send cookies, serve static files, render HTML.
+Recreate a Node.js (actually Deno) web framework. The API mirrors (a subset of) [expressjs](https://expressjs.com/).
 
-I tend to overdesign/over-engineer, so in this project, I'll try to write code right away and only abstract when blocked.
+## Rationale
+
+- Personal engineering skill issues:
+  - Sloppy abstractions.
+    - Wrong abstractions.
+    - Unnecessary abstraction a.k.a adding to high cognitive load.
+    - Abstractions that don't compose a.k.a one-shot abstractions a.k.a abstractions that are there *only* for the sake of deduplicating code a.k.a very inelegent.
+  - Unnecessarily complex code.
+- The `expressjs` API to me is very elegant:
+  - Simple/Straightforward.
+  - Streamline:
+    ```ts
+    res.status(200).send("This is the response");
+    ```
+  - Composable: You can create complex handlers and register it with `express()`, be it a simple function or a complex `Router`, which is itself a set of registered functions or `Router`s.
+    ```ts
+    const cRouter = express.Router();
+    cRouter.use('/child', ...);
+
+    const pRouter = express.Router();
+    pRouter.use('/parent', cRouter);
+
+    const app = express();
+    app.use('/app', pRouter);
+    ```
+    
+    After reading the classic SICP book ([my notes](https://github.com/Huy-DNA/sicp)), this property is called `closure` - `expressjs` allows the combination of handlers and the result can itself be combined further.
+- I want to play with Node's HTTP API a bit.
+
+## Why Node's HTTP API is not enough
+
+As far as I know, the HTTP API in Node handles HTTP at mostly the connection level:
+  - It can accept and serve concurrent connections well. The serving logic is left to the programmer.
+  - It allows us to receive requests and send appropriate responses.
+  - It provides us a low-level mechanism to extract request headers, cookies and body.
+
+This is still lackluster (understandable) to be an HTTP-compliant HTTP server & a web framework.
+
+  - In terms of an HTTP-compliant HTTP server, we need:
+    - Content negotiation.
+    - Conditional-GET handling.
+    - Range requests.
+    - etc.
+
+    These are mostly left to the programmer in the Node's HTTP API & even in `express` to allow for more flexibility. However, `express` does provide ways to handle these easier.
+
+  - In terms of a Web framework:
+    - The HTTP API is primitive:
+      - HTTP request body is streamed incrementally and we need to put together the chunks to get the full HTTP body.
+      - HTTP cookies need to be manually parsed.
+      - etc.
+    - Some common functionality is missing:
+      - Specifying routes & handlers.
+      - Specifying middleware.
+      - HTTP request body parsing based on its `Content-Type` header.
+      - Quickly build responses: send cookies, serve static files, render HTML.
+
+## Philosophy
+
+Keep it simple. Just write the code first & abstract when needed *or* may abstract in advance but only minimally.
+
+## What is implemented?
+
+I intend to cover the breadth but not much depth:
+
+- Easily extract headers, cookies, querystring, body from a request.
+- Easily set headers, cookie, body on a response.
+- Register a handler for a route. `Router`s are not supported.
+- Serve static files.
+- Support templating engines.
 
 ## Experience
 
@@ -35,6 +95,6 @@ I tend to overdesign/over-engineer, so in this project, I'll try to write code r
 
 - Always read raw data into `Buffer` instead of `string`.
 
-## To do
+## API reference
 
-- Write comprehensive tests.
+
