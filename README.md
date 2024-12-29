@@ -97,4 +97,38 @@ I intend to cover the breadth but not much depth:
 
 ## API reference
 
+I don't want to create noise on jsr for this hobby project so if you wanna test this, please replace `'expresso'` with the path you clone it into in your project.
 
+```ts
+import expresso from 'expresso';
+```
+
+### App
+
+```ts
+import expresso from 'expresso';
+
+const app = expresso();
+```
+
+#### `App.use([path], callback)`
+
+Like `expressjs`'s `app.use`.
+
+- `path`: The path for which the middleware function is invoked; can be any of:
+  - A string representing a path.
+  - A path pattern string using JS's regex notation (this differ from `express`).
+  - An array of combinations of any of the above.
+- `callback`: A function of type `(req: Request, res: Response, next: (void) => unknown) => unknown`.
+
+With `path` omitted, `'.*'` is assumed and `callback` is invoked for all `path`.
+
+#### `App.METHOD([path], callback)`
+
+Like `expressjs`'s `app.METHOD`.
+
+`METHOD` is one of the HTTP methods or `all`.
+
+#### `App.listen(port)`
+
+Start the HTTP and listening on port `port`.
