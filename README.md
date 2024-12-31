@@ -133,6 +133,10 @@ Like `expressjs`'s `app.METHOD`.
 
 Start the HTTP and listening on port `port`.
 
+#### `App.close()`
+
+Close the HTTP server.
+
 ### Request
 
 #### `Request.body`

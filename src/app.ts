@@ -140,4 +140,8 @@ export class ExpressoApp {
     console.log(`Expresso server is running on ${port}`);
     this.server.listen(port);
   }
+
+  close () {
+    this.server.close();
+  }
 }
