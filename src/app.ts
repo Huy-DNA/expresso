@@ -15,7 +15,7 @@ class Route {
     } 
     
     function pathToRegex (path: string): RegExp {
-      return new RegExp(`^${path}${options.asPrefix ? '' : '$'}`);
+      return new RegExp(`^${path.endsWith('/') ? path + '?' : path}${options.asPrefix ? '' : '$'}`);
     }
   }
 
@@ -27,7 +27,7 @@ class Route {
     if (!path.endsWith('/')) path += '/';
     if (!path.startsWith('/')) path = '/' + path;
     return path;
-  } 
+  }
 }
 
 export class ExpressoApp {
