@@ -20,7 +20,7 @@ export class Request {
   method: HttpMethod;
   readonly originalUrl: string | undefined;
   path: string;
-  query: Record<string, string>;
+  query: Record<string, unknown>;
 
   constructor (app: ExpressoApp, _req: IncomingMessage) {
     this.app = app;
