@@ -1,8 +1,12 @@
 {
   "version": "4",
   "specifiers": {
+    "jsr:@std/assert@*": "1.0.8",
     "jsr:@std/assert@1": "1.0.8",
+    "jsr:@std/assert@^1.0.10": "1.0.10",
+    "jsr:@std/expect@*": "1.0.10",
     "jsr:@std/internal@^1.0.5": "1.0.5",
+    "npm:@types/node@*": "22.5.4",
     "npm:cookie@1.0.2": "1.0.2",
     "npm:mime@*": "4.0.6",
     "npm:mime@^4.0.6": "4.0.6",
@@ -16,11 +20,30 @@
         "jsr:@std/internal"
       ]
     },
+    "@std/assert@1.0.10": {
+      "integrity": "59b5cbac5bd55459a19045d95cc7c2ff787b4f8527c0dd195078ff6f9481fbb3",
+      "dependencies": [
+        "jsr:@std/internal"
+      ]
+    },
+    "@std/expect@1.0.10": {
+      "integrity": "7659b640447887cd1735f866962e10e434f12443b13595b149970c806e6f08db",
+      "dependencies": [
+        "jsr:@std/assert@^1.0.10",
+        "jsr:@std/internal"
+      ]
+    },
     "@std/internal@1.0.5": {
       "integrity": "54a546004f769c1ac9e025abd15a76b6671ddc9687e2313b67376125650dc7ba"
     }
   },
   "npm": {
+    "@types/node@22.5.4": {
+      "integrity": "sha512-FDuKUJQm/ju9fT/SeX/6+gBzoPzlVCzfzmGkwKvRHQVxi4BntVbyIwf6a4Xn62mrvndLiml6z/UBXIdEVjQLXg==",
+      "dependencies": [
+        "undici-types"
+      ]
+    },
     "cookie@1.0.2": {
       "integrity": "sha512-9Kr/j4O16ISv8zBBhJoi4bXOYNTkFLOqSL3UDB0njXxCXNezjeyVrJyGOWtgfs/q2km1gwBcfH8q1yEGoMYunA=="
     },
@@ -29,10 +52,14 @@
     },
     "ms@2.1.3": {
       "integrity": "sha512-6FlzubTLZG3J2a/NVCAleEhjzq5oxgHyaCU9yYXvcLsvoVaHJq/s5xXI6/XXP6tz7R9xAOtHnSO/tXtF3WRTlA=="
+    },
+    "undici-types@6.19.8": {
+      "integrity": "sha512-ve2KP6f/JnbPBFyobGHuerC9g1FYGn/F8n1LWTwNxCEzd6IfqTwUQcNXgEtmmQ6DlRrC1hrSrBnCZPokRrDHjw=="
     }
   },
   "redirects": {
-    "https://deno.land/x/deno_qs/mod.ts": "https://deno.land/x/deno_qs@0.0.3/mod.ts"
+    "https://deno.land/x/deno_qs/mod.ts": "https://deno.land/x/deno_qs@0.0.3/mod.ts",
+    "https://esm.sh/v135/@types/qs@~6/index.d.ts": "https://esm.sh/v135/@types/qs@6.9.17/index.d.ts"
   },
   "remote": {
     "https://deno.land/x/deno_qs@0.0.3/mod.ts": "013057246eb61a67e75570bb2071da984de0ddbb7885ce1a20f5cc9ac64fac48",
