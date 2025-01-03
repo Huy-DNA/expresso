@@ -14,19 +14,21 @@ export class Response {
   private statusCode: number | undefined;
   private body: Buffer | string | undefined;
   private headers: {
-    'content-type'?: string;
-    'content-length'?: string;
+    "content-type"?: string;
+    "content-length"?: string;
     [index: string]: string | undefined;
   };
 
   constructor (app: ExpressoApp, _res: ServerResponse) {
     this.app = app;
     this._res = _res;
-    this.headers = {};
+    this.headers = {
+      "content-length": "0",
+    };
   }
 
   append (field: string, values: string | string[]): Response {
-    const value = Array.isArray(values) ? values.join(',') : values;
+    const value = Array.isArray(values) ? values.join(",") : values;
     const header = this.headers[field.toLowerCase()];
     this.headers[field] = header === undefined ? value : `${header},${value}`;
     return this;
@@ -81,6 +83,7 @@ export class Response {
   sendStatus (code: number): Response {
     this.statusCode = code;
     this.body = code.toString();
+    this.headers["content-length"] = code.toString().length.toString();
     return this;
   }
 
@@ -107,6 +110,7 @@ export class Response {
 
   json (data: JsonConvertible): Response {
     this.body = JSON.stringify(data);
+    this.headers["content-length"] = this.body.length.toString();
     this.headers["content-type"] = "application/json";
     return this;
   }
@@ -141,10 +145,10 @@ export class Response {
   }
 
   vary (value: string): Response {
-    return this.append('vary', value);
+    return this.append("vary", value);
   }
 
   type (value: string): Response {
-    return this.set('content-type', value);
+    return this.set("content-type", value);
   }
 }
