@@ -117,9 +117,11 @@ Like `expressjs`'s `app.use`.
 
 - `path`: The path for which the middleware function is invoked; can be any of:
   - A string representing a path.
-  - A path pattern string using JS's regex notation (this differ from `express`).
+  - A path pattern string using an extension of JS's regex notation (this differs from `express`).
   - An array of combinations of any of the above.
 - `callback`: A function of type `(req: Request, res: Response, next: (void) => unknown) => unknown`.
+
+The path pattern strings can also contain the `:param` pattern, which is equivalent to: `(?<param>[^/]+)`.
 
 With `path` omitted, `'.*'` is assumed and `callback` is invoked for all `path`.
 
@@ -173,6 +175,14 @@ The requested path of the request, omitting the query string.
 ```ts
 "/path?qs=q" // -> "/path"
 "/path" // -> "/path"
+```
+
+#### `Request.params`
+
+The path parameters of the matched route.
+
+```ts
+"/path/:id" // -> { id: "..." }
 ```
 
 #### `Request.query`

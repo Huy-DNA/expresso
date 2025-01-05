@@ -18,6 +18,7 @@ export class Request {
   hostname: string;
   ip?: string;
   method: HttpMethod;
+  params: { [key: string]: string };
   readonly originalUrl: string | undefined;
   path: string;
   query: Record<string, unknown>;
@@ -40,6 +41,8 @@ export class Request {
     const url = new URL(`http://expresso.com${_req.url || ''}`);
     this.path = url.pathname;
     this.query = qs.parse(url.search.slice(1));
+
+    this.params = {};
 
     this.ip = _req.socket.remoteAddress;
   }

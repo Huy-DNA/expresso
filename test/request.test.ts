@@ -38,6 +38,20 @@ Deno.test("Request 'path' is correctly delivered", async () => {
   app.close();
 });
 
+Deno.test("Request 'params' is correctly delivered", async () => { 
+  const app = expresso();
+  app.get("/tld", (req, res) => res.send(req.params));
+  app.get("/tld/:id", (req, res) => res.send(req.params));
+  app.get("/:id", (req, res) => res.send(req.params));
+  app.listen(8000);
+
+  expect(await fetchUrl("http://localhost:8000/tld")).toEqual("{}");
+  expect(await fetchUrl("http://localhost:8000/tld/3")).toEqual("{\"id\":\"3\"}");
+  expect(await fetchUrl("http://localhost:8000/abc")).toEqual("{\"id\":\"abc\"}");
+
+  app.close();
+});
+
 Deno.test("Request 'query' is correctly delivered", async () => { 
   const app = expresso();
   app.use((req, res) => res.send(JSON.stringify(req.query)));

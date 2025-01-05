@@ -15,12 +15,19 @@ class Route {
     } 
     
     function pathToRegex (path: string): RegExp {
+      path = path.replaceAll(/:([^/]+)/g, "(?<$1>[^/]+)");
       return new RegExp(`^${path.endsWith('/') ? path + '?' : path}${options.asPrefix ? '' : '$'}`);
     }
   }
 
   match (route: string): boolean {
     return this.patterns.some((pattern) => !!Route.normalizePath(route).match(pattern));
+  }
+
+  getParams (route: string): { [key: string]: string; } {
+    const normalizedPath = Route.normalizePath(route);
+    const pattern = this.patterns.find((pattern) => !!normalizedPath.match(pattern));
+    return pattern?.exec(route)?.groups || {};
   }
 
   private static normalizePath (path: string): string {
@@ -47,6 +54,7 @@ export class ExpressoApp {
         for (const router of this.routers) {
           if (!router.route.match(req.path) || ![req.method, '*'].includes(router.method)) continue;
           matchedOnce = true;
+          req.params = router.route.getParams(req.path);
 
           let shouldContinue = false;
           // deno-lint-ignore no-inner-declarations
