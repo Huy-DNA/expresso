@@ -204,3 +204,35 @@ Deno.test("Response headers `send` works correctly with JsonConvertible", async 
   
   app.close();
 });
+
+Deno.test("Response headers `raw` works correctly", async () => { 
+  const app = expresso();
+  app.use('/raw', (req, res) => {
+    res.raw("Hello world!");
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/raw");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual(null);
+  expect(res.headers.get("Content-Length")).toEqual("12");
+  expect(await res.text()).toEqual("Hello world!");
+  
+  app.close();
+});
+
+Deno.test("Response headers `json` works correctly", async () => { 
+  const app = expresso();
+  app.use('/raw', (req, res) => {
+    res.json({ message: "Hello world!" });
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/raw");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual("application/json");
+  expect(res.headers.get("Content-Length")).toEqual(null);
+  expect(await res.text()).toEqual("{\"message\":\"Hello world!\"}");
+  
+  app.close();
+});
