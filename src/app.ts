@@ -9,14 +9,16 @@ class Route {
 
   constructor (route: string | string[], options: { asPrefix: boolean; }) { 
     if (typeof route === "string") {
-      this.patterns = [pathToRegex(Route.normalizePath(route))];
+      this.patterns = [pathToRegex(route)];
     } else {
-      this.patterns = route.map(Route.normalizePath).map(pathToRegex);
+      this.patterns = route.map(pathToRegex);
     } 
     
     function pathToRegex (path: string): RegExp {
-      path = path.replaceAll(/:([^/]+)/g, "(?<$1>[^/]+)");
-      return new RegExp(`^${path.endsWith('/') ? path + '?' : path}${options.asPrefix ? '' : '$'}`);
+      path = Route.normalizePath(path); // normalize to `/<pathname>/`
+      path = path.replaceAll(/:([^/]+)/g, "(?<$1>[^/]+)"); // translate path param `:<param>` to the equivalent regex form
+      path = path.endsWith('/') ? path + '?' : path; // Make the last slash optional in the pattern
+      return new RegExp(`^${path}${options.asPrefix ? '' : '$'}`);
     }
   }
 
@@ -30,6 +32,7 @@ class Route {
     return pattern?.exec(route)?.groups || {};
   }
 
+  // normalize to the form `/<pathname>/`
   private static normalizePath (path: string): string {
     if (!path.endsWith('/')) path += '/';
     if (!path.startsWith('/')) path = '/' + path;
