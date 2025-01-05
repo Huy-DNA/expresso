@@ -236,3 +236,58 @@ Deno.test("Response `json` works correctly", async () => {
   
   app.close();
 });
+
+Deno.test("Response `location` works correctly", async () => { 
+  const app = expresso();
+  app.use('/location', (req, res) => {
+    res.location("/");
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/location");
+  expect(res.headers.get("Content-Type")).toEqual(null);
+  expect(res.headers.get("Content-Length")).toEqual("0");
+  expect(res.headers.get("Location")).toEqual("/");
+  expect(await res.text()).toEqual("");
+  
+  app.close();
+});
+
+Deno.test("Response `redirect` works correctly", async () => { 
+  const app = expresso();
+  app.use("/\\d*", (req, res) => {
+    const status = Number.parseInt(req.path.slice(1));
+    if (Number.isNaN(status)) {
+      res.redirect("/redirect");
+    } else {
+      res.redirect(status, "/redirect");
+    }
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/300");
+  expect(res.status).toEqual(300);
+  expect(res.headers.get("Content-Type")).toEqual(null);
+  expect(res.headers.get("Content-Length")).toEqual("0");
+  expect(res.headers.get("Location")).toEqual("/redirect");
+  expect(await res.text()).toEqual("");
+  
+  app.close();
+});
+
+Deno.test("Response `vary` works correctly", async () => { 
+  const app = expresso();
+  app.use("/vary", (req, res) => {
+    res.vary("Language");
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/vary");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual(null);
+  expect(res.headers.get("Content-Length")).toEqual("0");
+  expect(res.headers.get("Vary")).toEqual("Accept-Encoding, Language");
+  expect(await res.text()).toEqual("");
+  
+  app.close();
+});
