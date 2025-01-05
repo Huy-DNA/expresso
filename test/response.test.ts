@@ -144,12 +144,11 @@ Deno.test("Response `cookies` works correctly", async () => {
     },
   ]) {
     const res = await fetchUrl(`http://localhost:8000/cookies`, HttpMethod.POST, { "Content-Type": "application/json" }, new Blob([JSON.stringify(cookies)]));
-    let i = 0;
-    for (const cookie of res.headers.getSetCookie()) {
-      const [value, ...options] = cookie.split(";").map((c) => c.trim());
+    const resCookies = res.headers.getSetCookie();
+    for (let i = 0; i < Object.entries(cookies).length; ++i) {
+      const [value, ...options] = resCookies[i].split(";").map((c) => c.trim());
       const entry = Object.entries(cookies)[i];
       expect(value).toEqual(`${entry[0]}=${entry[1].value}`);
-      ++i;
     }
     expect(await res.text()).toEqual("");
   }
