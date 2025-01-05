@@ -2,6 +2,7 @@ import { expect } from "jsr:@std/expect";
 
 import expresso, { bodyParser } from "../src/index.ts";
 import { HttpMethod } from "../src/types.ts";
+import { Buffer } from "node:buffer";
 
 async function fetchUrl (url: string, method: HttpMethod = HttpMethod.GET, headers: { [key: string]: string } = {}, body: Blob | null = null): Promise<Response> {
   return await fetch(new Request(url, { method, headers, body: body }));
@@ -153,5 +154,53 @@ Deno.test("Response headers `cookies` works correctly", async () => {
     expect(await res.text()).toEqual("");
   }
 
+  app.close();
+});
+
+Deno.test("Response headers `send` works correctly with Buffer", async () => { 
+  const app = expresso();
+  app.use('/send', (req, res) => {
+    res.send(Buffer.from("Hello world!"));
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/send");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual("application/octet-stream");
+  expect(res.headers.get("Content-Length")).toEqual("12");
+  expect(await res.text()).toEqual("Hello world!");
+  
+  app.close();
+});
+
+Deno.test("Response headers `send` works correctly with String", async () => { 
+  const app = expresso();
+  app.use('/send', (req, res) => {
+    res.send("Hello world!");
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/send");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual("text/html");
+  expect(res.headers.get("Content-Length")).toEqual(null);
+  expect(await res.text()).toEqual("Hello world!");
+  
+  app.close();
+});
+
+Deno.test("Response headers `send` works correctly with JsonConvertible", async () => { 
+  const app = expresso();
+  app.use('/send', (req, res) => {
+    res.send({ message: "Hello world!" });
+  });
+  app.listen(8000);
+
+  const res = await fetchUrl("http://localhost:8000/send");
+  expect(res.status).toEqual(200);
+  expect(res.headers.get("Content-Type")).toEqual("application/json");
+  expect(res.headers.get("Content-Length")).toEqual(null);
+  expect(await res.text()).toEqual("{\"message\":\"Hello world!\"}");
+  
   app.close();
 });
