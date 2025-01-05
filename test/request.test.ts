@@ -43,11 +43,13 @@ Deno.test("Request 'params' is correctly delivered", async () => {
   app.get("/tld", (req, res) => res.send(req.params));
   app.get("/tld/:id", (req, res) => res.send(req.params));
   app.get("/:id", (req, res) => res.send(req.params));
+  app.get("/:id/:subid", (req, res) => res.send(req.params));
   app.listen(8000);
 
   expect(await fetchUrl("http://localhost:8000/tld")).toEqual("{}");
   expect(await fetchUrl("http://localhost:8000/tld/3")).toEqual("{\"id\":\"3\"}");
   expect(await fetchUrl("http://localhost:8000/abc")).toEqual("{\"id\":\"abc\"}");
+  expect(await fetchUrl("http://localhost:8000/123/123")).toEqual("{\"id\":\"123\",\"subid\":\"123\"}");
 
   app.close();
 });
