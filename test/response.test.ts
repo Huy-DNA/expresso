@@ -117,7 +117,7 @@ Deno.test("Response headers `append` works correctly", async () => {
   app.close();
 })
 
-Deno.test("Response headers `cookies` works correctly", async () => { 
+Deno.test("Response `cookies` works correctly", async () => { 
   const app = expresso();
   app.use(bodyParser.json());
   app.use('/cookies', (req, res) => {
@@ -157,7 +157,7 @@ Deno.test("Response headers `cookies` works correctly", async () => {
   app.close();
 });
 
-Deno.test("Response headers `send` works correctly with Buffer", async () => { 
+Deno.test("Response `send` works correctly with Buffer", async () => { 
   const app = expresso();
   app.use('/send', (req, res) => {
     res.send(Buffer.from("Hello world!"));
@@ -173,7 +173,7 @@ Deno.test("Response headers `send` works correctly with Buffer", async () => {
   app.close();
 });
 
-Deno.test("Response headers `send` works correctly with String", async () => { 
+Deno.test("Response `send` works correctly with String", async () => { 
   const app = expresso();
   app.use('/send', (req, res) => {
     res.send("Hello world!");
@@ -189,7 +189,7 @@ Deno.test("Response headers `send` works correctly with String", async () => {
   app.close();
 });
 
-Deno.test("Response headers `send` works correctly with JsonConvertible", async () => { 
+Deno.test("Response `send` works correctly with JsonConvertible", async () => { 
   const app = expresso();
   app.use('/send', (req, res) => {
     res.send({ message: "Hello world!" });
@@ -205,7 +205,7 @@ Deno.test("Response headers `send` works correctly with JsonConvertible", async 
   app.close();
 });
 
-Deno.test("Response headers `raw` works correctly", async () => { 
+Deno.test("Response `raw` works correctly", async () => { 
   const app = expresso();
   app.use('/raw', (req, res) => {
     res.raw("Hello world!");
@@ -221,14 +221,14 @@ Deno.test("Response headers `raw` works correctly", async () => {
   app.close();
 });
 
-Deno.test("Response headers `json` works correctly", async () => { 
+Deno.test("Response `json` works correctly", async () => { 
   const app = expresso();
-  app.use('/raw', (req, res) => {
+  app.use('/json', (req, res) => {
     res.json({ message: "Hello world!" });
   });
   app.listen(8000);
 
-  const res = await fetchUrl("http://localhost:8000/raw");
+  const res = await fetchUrl("http://localhost:8000/json");
   expect(res.status).toEqual(200);
   expect(res.headers.get("Content-Type")).toEqual("application/json");
   expect(res.headers.get("Content-Length")).toEqual(null);
