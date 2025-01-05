@@ -1,6 +1,6 @@
 import { expect } from "jsr:@std/expect";
 
-import expresso from "../src/index.ts";
+import expresso, { bodyParser } from "../src/index.ts";
 import { HttpMethod } from "../src/types.ts";
 
 async function fetchUrl (url: string, method: HttpMethod = HttpMethod.GET, headers: { [key: string]: string } = {}, body: Blob | null = null): Promise<Response> {
@@ -115,3 +115,43 @@ Deno.test("Response headers `append` works correctly", async () => {
 
   app.close();
 })
+
+Deno.test("Response headers `cookies` works correctly", async () => { 
+  const app = expresso();
+  app.use(bodyParser.json());
+  app.use('/cookies', (req, res) => {
+    const body = req.body as Record<string, { value: string; options: object }>;
+    for (const name in body) {
+      const { value, options } = body[name];
+      (options as any)["expires"] = new Date((options as any)["expires"]);
+      res.cookie(name, value, options);
+    }
+  });
+  app.listen(8000);
+  
+  for (const cookies of [
+    {
+      a: { value: "1", options: { domain: "", expires: 0, httpOnly: false, maxAge: 0, path: "/", secure: false, sameSite: "Lax" } },
+    },
+    {
+      a: { value: "a-1-2", options: { domain: "example.com", expires: 0, httpOnly: false, maxAge: 0, path: "/", secure: false, sameSite: "Lax" } },
+      "a-1": { value: "abcdef", options: { domain: "", expires: 1000, httpOnly: true, maxAge: 10, path: "/path", secure: true, sameSite: "Strict" } },
+    },
+    {
+      "-_a2": { value: "1234321asdgfc", options: { domain: "sub.example.com", expires: 10, httpOnly: true, maxAge: 0, path: "/", secure: false, sameSite: "None" } },
+      "_-1": { value: "!", options: { domain: "", expires: Date.now(), httpOnly: true, maxAge: 10, path: "/path", secure: true, sameSite: "Strict" } },
+    },
+  ]) {
+    const res = await fetchUrl(`http://localhost:8000/cookies`, HttpMethod.POST, { "Content-Type": "application/json" }, new Blob([JSON.stringify(cookies)]));
+    let i = 0;
+    for (const cookie of res.headers.getSetCookie()) {
+      const [value, ...options] = cookie.split(";").map((c) => c.trim());
+      const entry = Object.entries(cookies)[i];
+      expect(value).toEqual(`${entry[0]}=${entry[1].value}`);
+      ++i;
+    }
+    expect(await res.text()).toEqual("");
+  }
+
+  app.close();
+});
