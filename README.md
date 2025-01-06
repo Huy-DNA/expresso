@@ -31,6 +31,14 @@ Recreate a Node.js (actually Deno) web framework. The API mirrors (a subset of) 
     After reading the classic SICP book ([my notes](https://github.com/Huy-DNA/sicp)), this property is called `closure` - `expressjs` allows the combination of handlers and the result can itself be combined further.
 - I want to play with Node's HTTP API a bit.
 
+## Disclaimer
+
+I don't intend to make this `express`-compatible. I can go extra length to do this, which will unlock the following things:
+- Readily available test cases from `express` itself.
+- The diverse plugin ecosystem of `express`.
+
+This project is nothing but a toy for self-orientation.
+
 ## Why Node's HTTP API is not enough
 
 As far as I know, the HTTP API in Node handles HTTP at mostly the connection level:
