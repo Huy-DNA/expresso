@@ -7,8 +7,8 @@ Recreate a Node.js (actually Deno) web framework. The API mirrors (a subset of) 
 - Personal engineering skill issues:
   - Sloppy abstractions.
     - Wrong abstractions.
-    - Unnecessary abstraction a.k.a adding to high cognitive load.
-    - Abstractions that don't compose a.k.a one-shot abstractions a.k.a abstractions that are there *only* for the sake of deduplicating code a.k.a very inelegent.
+    - Unnecessary abstraction or high-cognitive-load abstraction.
+    - Abstractions that don't compose.
   - Unnecessarily complex code.
 - The `expressjs` API to me is very elegant:
   - Simple/Straightforward.
@@ -16,7 +16,7 @@ Recreate a Node.js (actually Deno) web framework. The API mirrors (a subset of) 
     ```ts
     res.status(200).send("This is the response");
     ```
-  - Composable: You can create complex handlers and register it with `express()`, be it a simple function or a complex `Router`, which is itself a set of registered functions or `Router`s.
+  - Composable: You can create complex handlers and register it with `express()`. The handler can be a simple function or a complex `Router`, which is itself a set of functions or `Router`s.
     ```ts
     const cRouter = express.Router();
     cRouter.use('/child', ...);
@@ -28,7 +28,7 @@ Recreate a Node.js (actually Deno) web framework. The API mirrors (a subset of) 
     app.use('/app', pRouter);
     ```
     
-    After reading the classic SICP book ([my notes](https://github.com/Huy-DNA/sicp)), this property is called `closure` - `expressjs` allows the combination of handlers and the result can itself be combined further.
+    After reading the classic SICP book ([my notes](https://github.com/Huy-DNA/sicp)), this property is called `closure` - `expressjs` allows the combination of handlers into a complex handler and the resulting handler can itself be combined further with other handlers.
 - I want to play with Node's HTTP API a bit.
 
 ## Disclaimer
